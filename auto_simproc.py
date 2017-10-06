@@ -254,7 +254,6 @@ class AutomaticSimProcedure(angr.SimProcedure):
                 arg_size_constraint = arg_size_constraint.replace(arg, symbolic_arg)
 
             successor = self.state.copy()
-            successor.globals['vars'] = symbolic_args + [retval]
             successor.se.add(arg_size_constraint)
             successor.se.add(template_constraint)
             successor.se.add(symbolic_ret == retval)
