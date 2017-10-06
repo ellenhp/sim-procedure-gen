@@ -1,11 +1,10 @@
 import angr
 import IPython
-import automatic_sim_procedure
+import auto_simproc
 
 def gen_simprocedure(proj, symbol_name):
     addr = proj.loader.find_symbol(symbol_name).addr
-    sim_procedure = automatic_sim_procedure.AutomaticSimProcedure()
-    sim_procedure.define_behavior(proj, addr)
+    sim_procedure = auto_simproc.AutomaticSimProcedure(proj, addr)
     proj.hook(addr, sim_procedure)
 
 proj = angr.Project("a.out", load_options={"auto_load_libs":False})
@@ -23,4 +22,3 @@ def isRetNonzero(state):
 for state in simgr.deadended:
     if isRetNonzero(state)._model_concrete:
         print 'found flag:', list(state.posix.dumps(0))
-        state.se.simplify()

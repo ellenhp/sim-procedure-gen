@@ -6,22 +6,17 @@
 
 char message[INPUT_LEN+1];
 
-unsigned long validateChar(unsigned long ch) {
+int validateChar(char ch) {
     char allowedChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 .,!?;'\"\0\r\n";
-    int retval = 0;
     for (int i = 0; i < sizeof(allowedChars)-1; i++) {
         if (ch == allowedChars[i]) {
-            retval = 1;
-            break;
+            return 1;
         }
     }
-    return retval;
+    return 0;
 }
 
-unsigned long toLower(unsigned long ch) {
-    if (ch != (ch & 0xFF)) {
-        return ch;
-    }
+char toLower(char ch) {
     char upper[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     char lower[] = "abcdefghijklmnopqrstuvwxyz";
     for (int i = 0; i < 26; i++) {
@@ -59,7 +54,8 @@ int main() {
     }
 
     for (int i = 0; i < INPUT_LEN; i++) {
-        if (message[i] != toLower(message[i]) || message[i] != ((5*i) % 26) + 97) {
+        int isLower = (toLower(message[i]) == message[i]) ? 1 : 0;
+        if (isLower == (((5*i) % 7)&0x1) || toLower(message[i]) != ((5*i) % 26) + 97) {
             exit(0);
         }
     }
