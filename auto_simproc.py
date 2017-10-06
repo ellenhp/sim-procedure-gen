@@ -3,9 +3,7 @@ import IPython
 import claripy
 from auto_simproc_argument import AutomaticSimProcedureArgument
 
-
 class AutomaticSimProcedure(angr.SimProcedure):
-
     def __init__(self, proj, addr, **kwargs):
         angr.SimProcedure.__init__(self, project=proj, **kwargs)
         cc = proj.factory.cc()
@@ -35,7 +33,6 @@ class AutomaticSimProcedure(angr.SimProcedure):
 
         self._constrain_argument_sizes(constraint_sets)
         self._linearize(constraint_sets)
-
 
     def _create_return_bucket(self, return_key, constraint_sets, linearized=False):
         # We can do this right away, since any constraint set in our list results in this return value
@@ -77,7 +74,6 @@ class AutomaticSimProcedure(angr.SimProcedure):
             size_costraints.append(arg[63:size] == 0)
 
         self.arg_size_constraint = claripy.And(*size_costraints)
-
 
     def _walk_ast(self, ast):
         if not isinstance(ast, claripy.ast.base.Base):
@@ -128,8 +124,6 @@ class AutomaticSimProcedure(angr.SimProcedure):
                 return {i: set(all_bits) for i in xrange(len(ast))}
             else:
                 raise ValueError('Unknown AST type')
-
-
 
     def _linearize(self, constraint_sets):
         solver = claripy.Solver()
@@ -232,14 +226,6 @@ class AutomaticSimProcedure(angr.SimProcedure):
 
                 #now add the whole bucket with one key
                 self._create_return_bucket(retval.cache_key, (constraints,), linearized=True)
-                # self.constraints_for_ret[] = constraints
-        #
-        # #make sure that all successor states happen under mutually exclusive conditions
-        # for key in constraints_without_bucket_info.keys():
-        #     other_keys = [k for k in constraints_without_bucket_info.keys() if k != key]
-        #     other_constraints = [constraints_without_bucket_info[k] for k in other_keys]
-        #     any_other_constraint_true = claripy.Or(*other_constraints)
-        #     self.constraints_for_ret[key] = claripy.And(self.constraints_for_ret[key], claripy.Not(any_other_constraint_true))
 
     def run(self, arg):
         actual_args = self.cc.arg(self.state, 0)
